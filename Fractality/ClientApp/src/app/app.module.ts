@@ -5,28 +5,28 @@ import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 
 import { AppComponent } from './app.component';
-import { NavMenuComponent } from './nav-menu/nav-menu.component';
-import { HomeComponent } from './home/home.component';
-import { CounterComponent } from './counter/counter.component';
-import { FetchDataComponent } from './fetch-data/fetch-data.component';
+import { AppRoutingModule } from './app.router';
+import { MainPageComponent } from './component/pages/main-page/main-page.component';
+import { MandelbrotSetPageComponent } from './component/pages/mandelbrot-set-page/mandelbrot-set-page.component';
+import { JuliaSetPageComponent } from './component/pages/julia-set-page/julia-set-page.component';
+import { DouadyRabbitPageComponent } from './component/pages/douady-rabbit-page/douady-rabbit-page.component';
+import { HeaderComponent } from './component/layouts/header/header.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    NavMenuComponent,
-    HomeComponent,
-    CounterComponent,
-    FetchDataComponent
+    MainPageComponent,
+    MandelbrotSetPageComponent,
+    JuliaSetPageComponent,
+    DouadyRabbitPageComponent,
+    HeaderComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
     HttpClientModule,
     FormsModule,
-    RouterModule.forRoot([
-      { path: '', component: HomeComponent, pathMatch: 'full' },
-      { path: 'counter', component: CounterComponent },
-      { path: 'fetch-data', component: FetchDataComponent },
-    ])
+    AppRoutingModule,
+    RouterModule
   ],
   providers: [],
   bootstrap: [AppComponent]
