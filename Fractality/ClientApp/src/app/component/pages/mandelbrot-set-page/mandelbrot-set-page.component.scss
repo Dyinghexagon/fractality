@@ -1,0 +1,28 @@
+@import "../../../../assets/shared/variables";
+@import "../../../../assets/shared/page";
+
+$buffer-row-background-color: #ffbb42;
+$main-row-background-color: #fed792;
+$border: 2px solid $color-black;
+
+.page {
+    grid-template-rows: 5vh 84vh 5vh;
+
+    .buffer-row {
+        background-color: $buffer-row-background-color;
+    }
+
+    .main-row {
+        background-color: $main-row-background-color;
+        border-bottom: $border;
+        border-top: $border;
+        
+        .title-wrapper {
+            border-left: $border;
+
+            .title {
+                color: $color-black;
+            }
+        }
+    }
+}
