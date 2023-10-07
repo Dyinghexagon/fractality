@@ -14,6 +14,7 @@ import { HeaderComponent } from './component/layouts/header/header.component';
 import { AppConfig } from './app.config';
 import { BaseService } from './services/base.service';
 import { UserService } from './services/user.service';
+import { FractalGenerateService } from './services/fractal-generate.service';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { UserService } from './services/user.service';
   providers: [
     AppConfig,
     BaseService,
-    UserService
+    UserService,
+    FractalGenerateService
   ],
   bootstrap: [AppComponent]
 })

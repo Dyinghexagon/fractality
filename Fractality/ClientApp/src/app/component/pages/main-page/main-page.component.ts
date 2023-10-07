@@ -1,5 +1,6 @@
 import { Component } from "@angular/core";
 import { Guid } from "guid-typescript";
+import { FractalGenerateService } from "src/app/services/fractal-generate.service";
 import { UserService } from "src/app/services/user.service";
 
 @Component({
@@ -9,19 +10,10 @@ import { UserService } from "src/app/services/user.service";
 })
 export class MainPageComponent {
     
-    constructor(private readonly userServices: UserService) {}
+    constructor(private readonly fractalGenerate: FractalGenerateService) {}
 
     public async createUser(): Promise<void> {
-        const id =  await this.userServices.createUser(
-        {
-            id: Guid.create().toString(),
-            name: "test",
-            email: "test@test.ru",
-            isActive: true,
-            dateCreated: new Date(),
-            dateUpdated: new Date() 
-        });
-        console.warn(id);
+        this.fractalGenerate.generate();
     }
 
 }
