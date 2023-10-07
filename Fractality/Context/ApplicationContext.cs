@@ -1,4 +1,4 @@
-﻿using Fractality.Models;
+﻿using Fractality.Models.Backend;
 using Microsoft.EntityFrameworkCore;
 
 namespace Fractality.Context
@@ -7,14 +7,23 @@ namespace Fractality.Context
     {
         public DbSet<User> Users { get; set; }
 
-        private readonly IConfiguration _configuration;
-
-        public ApplicationContext(IConfiguration configuration) 
-        {
-            _configuration = configuration;
+        public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options) {
         }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-            => optionsBuilder.UseNpgsql(_configuration.GetConnectionString("PostgreSQL"));
+
+        public async Task<int> SaveChangesAsync()
+        {
+            return await base.SaveChangesAsync();
+        }
+
+        public DbSet<T> DbSet<T>() where T : class
+        {
+            return Set<T>();
+        }
+
+        public IQueryable<T> Query<T>() where T : class
+        {
+            return Set<T>();
+        }
     }
 }

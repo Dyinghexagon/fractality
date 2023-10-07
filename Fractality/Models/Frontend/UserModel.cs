@@ -1,9 +1,7 @@
-﻿namespace Fractality.Models
+﻿namespace Fractality.Models.Frontend
 {
-    public class User
+    public class UserModel : Entity
     {
-        public Guid Id { get; set; }
-
         public string Name { get; set; } = string.Empty;
 
         public string Email { get; set; } = string.Empty;

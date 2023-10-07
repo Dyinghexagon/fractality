@@ -11,6 +11,9 @@ import { MandelbrotSetPageComponent } from './component/pages/mandelbrot-set-pag
 import { JuliaSetPageComponent } from './component/pages/julia-set-page/julia-set-page.component';
 import { DouadyRabbitPageComponent } from './component/pages/douady-rabbit-page/douady-rabbit-page.component';
 import { HeaderComponent } from './component/layouts/header/header.component';
+import { AppConfig } from './app.config';
+import { BaseService } from './services/base.service';
+import { UserService } from './services/user.service';
 
 @NgModule({
   declarations: [
@@ -28,7 +31,11 @@ import { HeaderComponent } from './component/layouts/header/header.component';
     AppRoutingModule,
     RouterModule
   ],
-  providers: [],
+  providers: [
+    AppConfig,
+    BaseService,
+    UserService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

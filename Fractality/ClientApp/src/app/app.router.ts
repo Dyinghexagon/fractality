@@ -6,6 +6,7 @@ import { MainPageComponent } from "./component/pages/main-page/main-page.compone
 import { MandelbrotSetPageComponent } from "./component/pages/mandelbrot-set-page/mandelbrot-set-page.component";
 
 const routes: Routes = [
+    { path: "", component: MainPageComponent, pathMatch: "full" },
     { path: "main", component: MainPageComponent },
     { path: "mandelbrot-set", component: MandelbrotSetPageComponent },
     { path: "julia-set", component: JuliaSetPageComponent },
