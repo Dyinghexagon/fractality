@@ -11,18 +11,18 @@
             <h1 class="title display-1">
                 Fractality
             </h1>
-            <button class="btn btn-danger" (click)="createUser()">
-                ТЕСТОВАЯ КНОПКА
-            </button>
         </div>
     </div>
     <div class="mandelbrot-set-row">
         Блок о Множестве Мандельброта
+        <img [src]="imageUrls.get(fractalTypes.mandelbrotSet)" alt="">
     </div>
     <div class="julia-set-row">
         Блок о Множестве Джулия
+        <img [src]="imageUrls.get(fractalTypes.juliaSet)" alt="">
     </div>
     <div class="douady-rabbit-row">
         Блок о Кролике Дуади
+        <img [src]="imageUrls.get(fractalTypes.douadyRabbit)" alt="">
     </div>
 </div>

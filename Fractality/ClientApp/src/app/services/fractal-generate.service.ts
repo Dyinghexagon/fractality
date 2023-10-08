@@ -15,7 +15,19 @@ export class FractalGenerateService extends BaseService {
         super(http, zone, baseUrl);
     }
 
-    public generate(): Promise<void> {
-        return this.get(`${this.config.fractalGenerateApi}/generate`);
+    public get baseUrl(): string {
+        return "../../../../assets/images/genetare-images";
+    }
+
+    public generateMandelbrotSet(): Promise<string> {
+        return this.get(`${this.config.fractalGenerateApi}/generate/mandelbrot-set`).then(image => `${this.baseUrl}/${image.body}`);
+    }
+
+    public generateJuliaSet(): Promise<string> {
+        return this.get(`${this.config.fractalGenerateApi}/generate/julia-set`).then(image => `${this.baseUrl}/${image.body}`);
+    }
+
+    public generateDouadyRabbit(): Promise<string> {
+        return this.get(`${this.config.fractalGenerateApi}/generate/douady-rabbit`).then(image => `${this.baseUrl}/${image.body}`);
     }
 }

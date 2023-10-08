@@ -1,9 +1,11 @@
 using Fractality;
 using Fractality.Context;
 using Fractality.Repositories;
+using Fractality.Services;
 using Fractality.Services.UserServices;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.FileProviders;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,6 +24,10 @@ builder.Services.AddScoped<IDbRepository, DbRepository>();
 
 builder.Services.AddTransient<IUsersServices, UserServices>();
 
+IFileProvider physicalProvider = new PhysicalFileProvider(Directory.GetCurrentDirectory());
+builder.Services.AddSingleton<IFileProvider>(physicalProvider);
+
+builder.Services.AddMvc();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddCors();
 

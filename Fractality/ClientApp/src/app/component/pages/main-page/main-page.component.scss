@@ -9,4 +9,13 @@
         display: grid;
         grid-template-columns: 1fr 1fr;
     }
+
+    .simple-image {
+        width: 100%;
+        height: 100%;
+        display: inline-block;
+        vertical-align: top;
+        object-fit: cover;
+        object-position: center center;
+    }
 }

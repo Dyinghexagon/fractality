@@ -1,19 +1,27 @@
-import { Component } from "@angular/core";
-import { Guid } from "guid-typescript";
+import { Component, OnInit } from "@angular/core";
 import { FractalGenerateService } from "src/app/services/fractal-generate.service";
-import { UserService } from "src/app/services/user.service";
 
 @Component({
     selector: "main-page",
     templateUrl: "./main-page.component.html",
     styleUrls: [ "./main-page.component.scss" ]
 })
-export class MainPageComponent {
+export class MainPageComponent implements OnInit {
     
-    constructor(private readonly fractalGenerate: FractalGenerateService) {}
+    public imageUrls: Map<FractalTypes, string> = new Map<FractalTypes, string>();
+    public fractalTypes = FractalTypes;
+    constructor(private readonly fractalGenerateService: FractalGenerateService) {}
 
-    public async createUser(): Promise<void> {
-        this.fractalGenerate.generate();
+    public async ngOnInit(): Promise<void> {
+        this.imageUrls.set(FractalTypes.mandelbrotSet, await this.fractalGenerateService.generateMandelbrotSet());
+        this.imageUrls.set(FractalTypes.juliaSet, await this.fractalGenerateService.generateJuliaSet());
+        this.imageUrls.set(FractalTypes.douadyRabbit, await this.fractalGenerateService.generateDouadyRabbit());
     }
 
+}
+
+export enum FractalTypes {
+    mandelbrotSet = "mandelbrot-set",
+    juliaSet = "julia-set",
+    douadyRabbit = "douady-rabbit"
 }
