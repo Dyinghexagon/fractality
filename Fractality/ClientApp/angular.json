@@ -136,5 +136,8 @@
       }
     }
   },
-  "defaultProject": "Fractality"
+  "defaultProject": "Fractality",
+  "cli": {
+    "analytics": false
+  }
 }

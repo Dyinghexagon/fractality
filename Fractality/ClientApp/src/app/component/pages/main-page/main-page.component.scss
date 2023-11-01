@@ -2,20 +2,74 @@
 @import "../../../../assets/shared/page";
 
 .page {
-    grid-template-rows: 100vh 100vh 100vh 100vh;
     background-color: $main-page-background-color;
+    gap: 16px;
+    grid-template-rows: 1fr 1fr 1fr;
 
     .main-row {
         display: grid;
         grid-template-columns: 1fr 1fr;
     }
 
-    .simple-image {
-        width: 100%;
-        height: 100%;
-        display: inline-block;
-        vertical-align: top;
-        object-fit: cover;
-        object-position: center center;
+    .artical-wrapper {
+        padding-left: 16px;
+        padding-right: 16px;
+        display: flex;
+        flex-direction: column; 
+
+        .image-wrapper {
+            border: 1px solid $color-white;
+            border-bottom: 0;
+            padding: 16px;
+        }
+
+        .article {
+            color: $color-white;
+            text-align: center;
+            border: 1px solid $color-white;
+    
+            .title {
+                font-size: $artical-title-font-size;
+            }
+    
+            .description {
+                font-size: $artical-description-font-size;
+            }
+        }
+
+        &.julia-set {
+            .image-wrapper {
+                display: grid;
+                grid-template-columns: 0.2fr 1fr;
+                background-color: $color-mauve;
+
+                .left-column {
+                    display: grid;
+                    grid-template-rows: 1fr 1fr;
+
+                    .up-block {
+                        background-color: $color-dark-orchid;
+
+                        span::before {
+                            border-radius: 50%;
+                            color: red;
+                        }
+                    }
+
+                    .down-block {
+                        background-color: $color-army-green;
+                    }
+                }
+            }
+        }
     }
+}
+
+.simple-image {
+    width: 100%;
+    height: 100%;
+    display: inline-block;
+    vertical-align: top;
+    object-fit: cover;
+    object-position: center center;
 }

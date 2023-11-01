@@ -27,7 +27,7 @@ export class FractalGenerateService extends BaseService {
         return this.get(`${this.config.fractalGenerateApi}/generate/julia-set`).then(image => `${this.baseUrl}/${image.body}`);
     }
 
-    public generateDouadyRabbit(): Promise<string> {
-        return this.get(`${this.config.fractalGenerateApi}/generate/douady-rabbit`).then(image => `${this.baseUrl}/${image.body}`);
+    public generate(): Promise<string> {
+        return this.get(`${this.config.fractalGenerateApi}/generate/test`).then(image => image);
     }
 }

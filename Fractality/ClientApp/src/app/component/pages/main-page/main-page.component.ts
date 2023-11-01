@@ -15,7 +15,11 @@ export class MainPageComponent implements OnInit {
     public async ngOnInit(): Promise<void> {
         this.imageUrls.set(FractalTypes.mandelbrotSet, await this.fractalGenerateService.generateMandelbrotSet());
         this.imageUrls.set(FractalTypes.juliaSet, await this.fractalGenerateService.generateJuliaSet());
-        this.imageUrls.set(FractalTypes.douadyRabbit, await this.fractalGenerateService.generateDouadyRabbit());
+    }
+
+    public async generate(): Promise<void> {
+        const test = await this.fractalGenerateService.generate();
+        console.warn(test);
     }
 
 }
@@ -23,5 +27,4 @@ export class MainPageComponent implements OnInit {
 export enum FractalTypes {
     mandelbrotSet = "mandelbrot-set",
     juliaSet = "julia-set",
-    douadyRabbit = "douady-rabbit"
 }
