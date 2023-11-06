@@ -12,13 +12,11 @@
                 Fractality
             </h1>
         </div>
-        <button type="button" class="btn btn-primary" (click)="generate()">
-            generate fractal
-        </button>
     </div>
     <div class="artical-wrapper">
         <div class="image-wrapper">
-            <img [src]="imageUrls.get(fractalTypes.mandelbrotSet)" alt="" class="simple-image">
+            <canvas #mandelbrotSet (click)="scaleFractal($event)"></canvas>
+            <button type="button" class="btn btn-info" (click)="clear()">Clear</button>
         </div>
         <div class="article">
             <h2 class="title">
@@ -43,7 +41,7 @@
 
                 </div>
             </div>
-            <img [src]="imageUrls.get(fractalTypes.mandelbrotSet)" alt="" class="simple-image">
+            <img src="../../../../assets/images/genetare-images/julia-set.png" alt="" class="simple-image">
         </div>
         <div class="article">
             <h2 class="title">

@@ -16,7 +16,6 @@ builder.Services.AddControllers()
                      options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                  });
 builder.Services.AddAuthentication();
-
 builder.Services.AddAutoMapper(typeof(ApplicationMappingProfile));
 builder.Services.AddDbContext<ApplicationContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreSQL")));
 
