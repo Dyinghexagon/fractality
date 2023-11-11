@@ -15,7 +15,13 @@
     </div>
     <div class="artical-wrapper">
         <div class="image-wrapper">
-            <canvas #mandelbrotSet (click)="scaleFractal($event)"></canvas>
+            <select [ngModel]="screenResolutionName" (ngModelChange)="selectScreenSolutionType($event)" class="form-control" name="screen-resolution-select" id="screen-resolution-select">
+                <option [ngValue]="screenResolutionNameValue.HD">hd</option>
+                <option [ngValue]="screenResolutionNameValue.FullHD">FullHD</option>
+                <option [ngValue]="screenResolutionNameValue.TwoK">TwoK</option>
+                <option [ngValue]="screenResolutionNameValue.FourK">FourK</option>
+             </select>
+            <canvas #mandelbrotSet></canvas>
             <button type="button" class="btn btn-info" (click)="clear()">Clear</button>
         </div>
         <div class="article">
@@ -41,7 +47,7 @@
 
                 </div>
             </div>
-            <img src="../../../../assets/images/genetare-images/julia-set.png" alt="" class="simple-image">
+            <img src="../../../../assets/images/julia-set-page/main.png" alt="" class="simple-image">
         </div>
         <div class="article">
             <h2 class="title">

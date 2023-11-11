@@ -9,6 +9,7 @@ namespace Fractality
         public ApplicationMappingProfile() 
         {
             CreateMap<User, UserModel>().ReverseMap();
+            CreateMap<Fractal, FractalModel>().ReverseMap();
         }
     }
 }

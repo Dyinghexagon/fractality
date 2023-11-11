@@ -2,6 +2,7 @@ using Fractality;
 using Fractality.Context;
 using Fractality.Repositories;
 using Fractality.Services.UserServices;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using System.Text.Json.Serialization;
@@ -15,6 +16,12 @@ builder.Services.AddControllers()
                      options.JsonSerializerOptions.PropertyNamingPolicy = null;
                      options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                  });
+
+builder.Services.Configure<KestrelServerOptions>(options =>
+{
+    options.Limits.MaxRequestBodySize = int.MaxValue;
+});
+
 builder.Services.AddAuthentication();
 builder.Services.AddAutoMapper(typeof(ApplicationMappingProfile));
 builder.Services.AddDbContext<ApplicationContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreSQL")));

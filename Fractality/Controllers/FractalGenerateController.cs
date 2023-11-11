@@ -2,7 +2,9 @@
 using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.Drawing;
 using System.Numerics;
-using System.Text.Json;
+using Fractality.Models.Backend;
+using Fractality.Models.Frontend;
+using AutoMapper;
 
 namespace Fractality.Controllers
 {
@@ -11,12 +13,13 @@ namespace Fractality.Controllers
     public class FractalGenerateController : ControllerBase
     {
         private readonly ILogger<FractalGenerateController> _logger;
-        private double hx, hy, x_, y_, n;
-        private double sizeArea, scaleArea;
-
-        public FractalGenerateController(ILogger<FractalGenerateController> logger) {
+        private readonly IMapper _mapper;
+        public FractalGenerateController(
+            ILogger<FractalGenerateController> logger,
+            IMapper mapper
+        ) {
             _logger = logger;
-            SetDefaultValues();
+            _mapper = mapper;
         }
 
         [HttpGet("julia-set")]
@@ -64,97 +67,76 @@ namespace Fractality.Controllers
             }
         }
 
-        [HttpGet("mandelbrot-set")]
+        [HttpPost("mandelbrot-set")]
         public IActionResult GenerateMandelbrotSet(
-            [FromQuery] string clickType,
+            [FromBody] FractalModel fractalModel,
+            [FromQuery] ClickType clickType,
             [FromQuery] int width = 400,
             [FromQuery] int height = 600,
             [FromQuery] int limitIteration = 100,
-            [FromQuery] int mouseX = 0,
-            [FromQuery] int mouseY = 0
+            [FromQuery] double mouseX = 0,
+            [FromQuery] double mouseY = 0
             )
         {
             try
             {
+                var fractal = _mapper.Map<Fractal>(fractalModel);
                 switch (clickType)
                 {
-                    case "zoomIn":
-                        hx = (hx - sizeArea / 2) + mouseX * (sizeArea / width);
-                        hy = (hy - sizeArea / 2) + mouseY * (sizeArea / height);
-                        sizeArea /= scaleArea;
+                    case ClickType.ZoomIn:
+                        fractal.Hx = fractal.RecalculateHx(mouseX, width);
+                        fractal.Hy = fractal.RecalculateHy(mouseY, height);
+                        fractal.SizeArea /= fractal.ScaleArea;
                         break;
-                    case "Middle":
-                        sizeArea = 3;
-                        scaleArea = 3;
+                    case ClickType.Middle:
+                        fractal.SizeArea = 3;
+                        fractal.ScaleArea = 3;
                         break;
-                    case "zoomOut":
-                        x_ = (hx - sizeArea / 2) + mouseX * (sizeArea / width);
-                        y_ = (hy - sizeArea / 2) + mouseY * (sizeArea / height);
-                        sizeArea *= scaleArea;
+                    case ClickType.ZoomOut:
+                        fractal.X = fractal.RecalculateHx(mouseX, width);
+                        fractal.Y = fractal.RecalculateHy(mouseY, height);
+                        fractal.SizeArea *= fractal.ScaleArea;
                         break;
                     default:
                         {
-                            SetDefaultValues();
                             break;
                         }
                 }
-                var canvas = new List<List<string>>();
-                for (var x = 0; x < width; x++)
+
+                fractal.Canvas.Clear();
+                for (var i = 0; i < width; i++)
                 {
-                    x_ = (hx - sizeArea / 2) + x * (sizeArea / width);
-                    canvas.Add(new List<string>());
-                    for (var y = 0; y < height; y++)
+                    fractal.X = fractal.RecalculateHx(i, width);
+                    fractal.Canvas.Add(new List<string>());
+                    for (var j = 0; j < height; j++)
                     {
-                        y_ = (hy - sizeArea / 2) + y * (sizeArea / height);
-                        var z = new Complex();
+                        fractal.Y = fractal.RecalculateHy(j, height);
+                        var z = new Complex(0, 0);
 
                         var countIteration = 0;
                         do
                         {
                             countIteration++;
-                            z = z * z;
-                            z += new Complex(x_, y_);
-
+                            z *= z;
+                            z += new Complex(fractal.X, fractal.Y);
                             if (z.Magnitude > 2.0) break;
                         } while (countIteration < limitIteration);
 
-                        var color = countIteration < limitIteration
-                            ? Color.FromRgb(
-                                (byte)(countIteration % 2 * 128),
-                                (byte)(countIteration % 4 * 3),
-                                (byte)(countIteration % 2 * 66))
-                            : Color.FromRgb(74, 124, 194);
-                        canvas[x].Add(color.ToString());
+                        var color = Color.FromRgba(
+                            (byte)(countIteration % 8 * 16),
+                            (byte)(countIteration % 4 * 32),
+                            (byte)(countIteration % 2 * 64), 255);
+                        fractal.Canvas[i].Add(color.ToString());
                     }
                 }
-                var baseUrl = "ClientApp/src/assets/images/genetare-images";
-                var imageName = $"mandelbrot-set-{Guid.NewGuid()}.png";
-                var path = $"./{baseUrl}/{imageName}";
-                string jsonString = JsonSerializer.Serialize(canvas);
-
-                return Ok(canvas);
+                
+                return Ok(_mapper.Map<FractalModel>(fractal));
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message, ex);
                 return BadRequest(ex);
             }
-        }
-
-        private void SetDefaultValues()
-        {
-            hx = 0;
-            hy = 0;
-            n = 0;
-            sizeArea = 3;
-            scaleArea = 3;
-        }
-
-        private static Complex GetNormalizeComplex(int x, int y, int width, int height)
-        {
-            var a = (double)(x - (width / 2)) / (double)(width / 4);
-            var b = (double)(y - (height / 2)) / (double)(height / 4);
-            return new Complex(a, b);
         }
 
         private static Color GetRandomColor()
@@ -169,4 +151,12 @@ namespace Fractality.Controllers
             return random.NextSingle() * random.Next(minValue, maxValue);
         }
     }
+}
+
+public enum ClickType
+{
+    ZoomIn,
+    Middle,
+    ZoomOut,
+    Nonne
 }

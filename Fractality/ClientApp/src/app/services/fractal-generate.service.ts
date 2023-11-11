@@ -2,6 +2,8 @@ import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable, NgZone } from "@angular/core";
 import { AppConfig } from "../app.config";
 import { BaseService } from "./base.service";
+import { FractalModel, IFractalModel } from "../models/Fractals/fractal.model";
+import { MandelbrotSet } from "../models/Fractals/mandelbrot-set.mode;";
 
 @Injectable()
 export class FractalGenerateService extends BaseService {
@@ -32,21 +34,28 @@ export class FractalGenerateService extends BaseService {
         return screenResolution;
     }
 
-    public get baseUrl(): string {
-        return "../../../../assets/images/genetare-images";
-    }
-
-    public generateMandelbrotSet(screenResolutionName: ScreenResolutionName, clickType: string = "test", mouseX: number = 0, mouseY: number = 0): Promise<string[][]> {
+    public generateMandelbrotSet(
+        screenResolutionName: ScreenResolutionName, 
+        fractal: FractalModel,
+        clickType: ClickType = ClickType.None, 
+        mouseX: number = 0, 
+        mouseY: number = 0
+        ): Promise<MandelbrotSet> {
         let screenResolution = this.screenResolutions.get(screenResolutionName);
-        return this.get(`${this.config.fractalGenerateApi}/mandelbrot-set?clickType=${clickType}&width=${screenResolution?.width}&height=${screenResolution?.height}&limitIteration=100&mouseX=${mouseX}&mouseY=${mouseY}`).then(image => image.body);
+        const urlRoot = `${this.config.fractalGenerateApi}/mandelbrot-set?`;
+        const query = [
+            `clickType=${clickType}`,
+            `width=${screenResolution?.width}`,
+            `height=${screenResolution?.height}`,
+            `limitIteration=100`,
+            `mouseX=${mouseX}`,
+            `mouseY=${mouseY}`
+        ];
+        return this.post(urlRoot + query.join("&"), fractal).then(result => new MandelbrotSet(result.body));
     }
 
     public generateJuliaSet(): Promise<string> {
-        return this.get(`${this.config.fractalGenerateApi}/julia-set`).then(image => `${this.baseUrl}/${image.body}`);
-    }
-
-    public generate(): Promise<string> {
-        return this.get(`${this.config.fractalGenerateApi}/generate`).then(image => `${this.baseUrl}/${image.body}`);
+        return this.get(`${this.config.fractalGenerateApi}/julia-set`).then(result => result);
     }
 }
 
@@ -60,4 +69,12 @@ export enum ScreenResolutionName {
 export interface IScreenResolution {
     height: number;
     width: number;
+}
+
+export enum ClickType
+{
+    ZoomIn,
+    Middle,
+    ZoomOut,
+    None
 }
