@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from "@angular/core";
 import { FractalEmptyFactory } from "src/app/models/Fractals/fractal-empty-factory.model";
+import { JuliaSet } from "src/app/models/Fractals/julia-set.model";
 import { MandelbrotSet } from "src/app/models/Fractals/mandelbrot-set.mode;";
 import { ClickType, FractalGenerateService, IScreenResolution, ScreenResolutionName } from "src/app/services/fractal-generate.service";
 
@@ -11,14 +12,17 @@ import { ClickType, FractalGenerateService, IScreenResolution, ScreenResolutionN
 export class MainPageComponent implements AfterViewInit {
 
     @ViewChild("mandelbrotSet", { static: false }) public mandelbrotSetCanvas!: ElementRef;
+    @ViewChild("juliaSet", { static: false }) public juliaSetCanvas!: ElementRef;
 
     public screenResolutionNameValue = ScreenResolutionName;
     public screenResolutionName = ScreenResolutionName.TwoK;
     public screenResolution!: IScreenResolution;
     public mandelbrotSet: MandelbrotSet;
+    public juliaSet: JuliaSet;
 
     constructor(private readonly fractalGenerateService: FractalGenerateService) {
-        this.mandelbrotSet = FractalEmptyFactory.CreateEmptyMandelbrotSet();
+        this.mandelbrotSet = FractalEmptyFactory.createEmptyMandelbrotSet();
+        this.juliaSet = FractalEmptyFactory.createEmptyJuliaSet();
     }
 
     public ngAfterViewInit(): void {
@@ -29,18 +33,28 @@ export class MainPageComponent implements AfterViewInit {
             const y = event.clientY - rect.top;
             this.fractalGenerateService.generateMandelbrotSet(this.screenResolutionName, this.mandelbrotSet, ClickType.ZoomIn, x, y).then((fractal: MandelbrotSet) => {
                 this.mandelbrotSet = fractal;
-                this.drawFractal();
+                this.drawMandelbrotSet();
             });
         });
         
         this.fractalGenerateService.generateMandelbrotSet(this.screenResolutionName, this.mandelbrotSet, ClickType.None).then((fractal: MandelbrotSet) => {
             this.mandelbrotSet = fractal;
-            this.setScreenResolution();
-            this.drawFractal();
+            this.setScreenResolutionFromMandelbrotSet();
+            this.drawMandelbrotSet();
         }); 
+
+        const rel = 0.74543;
+        const im = 0.11301;
+        const limitIteration = 1000;
+
+        this.fractalGenerateService.generateJuliaSet(this.screenResolutionName, this.juliaSet, ClickType.None, limitIteration, rel, im).then((fractal : JuliaSet) => {
+            this.juliaSet = fractal;
+            this.setScreenResolutionFromJuliatSet();
+            this.drawJuliaSet();
+        })
     }
 
-    private drawFractal(): void {
+    private drawMandelbrotSet(): void {
         var context = this.mandelbrotSetCanvas.nativeElement.getContext("2d");
         if (!context) {
             return;
@@ -48,23 +62,38 @@ export class MainPageComponent implements AfterViewInit {
         this.mandelbrotSet.draw(context, this.screenResolution.width, this.screenResolution.height);
     }
 
+    private drawJuliaSet(): void {
+        var context = this.juliaSetCanvas.nativeElement.getContext("2d");
+        if (!context) {
+            return;
+        }
+        this.juliaSet.draw(context, this.screenResolution.width, this.screenResolution.height);
+    }
+
     public clear(): void {
-        this.fractalGenerateService.generateMandelbrotSet(this.screenResolutionName, FractalEmptyFactory.CreateEmptyMandelbrotSet(), ClickType.None).then((fractal: MandelbrotSet) => {
+        this.fractalGenerateService.generateMandelbrotSet(this.screenResolutionName, FractalEmptyFactory.createEmptyMandelbrotSet(), ClickType.None).then((fractal: MandelbrotSet) => {
             this.mandelbrotSet = fractal;
-            this.drawFractal();
+            this.drawMandelbrotSet();
         });
     }
 
     public selectScreenSolutionType(name: ScreenResolutionName): void {
         this.screenResolutionName = name;
-        this.setScreenResolution();
+        this.setScreenResolutionFromMandelbrotSet();
         this.clear();
     }
 
-    private setScreenResolution(): void {
+    private setScreenResolutionFromMandelbrotSet(): void {
         this.screenResolution = this.fractalGenerateService.getScreenResolution(this.screenResolutionName);
         this.mandelbrotSetCanvas.nativeElement.height = this.screenResolution.height;
         this.mandelbrotSetCanvas.nativeElement.width = this.screenResolution.width;
     }
+
+    private setScreenResolutionFromJuliatSet(): void {
+        this.screenResolution = this.fractalGenerateService.getScreenResolution(this.screenResolutionName);
+        this.juliaSetCanvas.nativeElement.height = this.screenResolution.height;
+        this.juliaSetCanvas.nativeElement.width = this.screenResolution.width;
+    }
+
 
 }

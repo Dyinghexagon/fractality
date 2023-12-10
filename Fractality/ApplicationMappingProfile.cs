@@ -10,6 +10,8 @@ namespace Fractality
         {
             CreateMap<User, UserModel>().ReverseMap();
             CreateMap<Fractal, FractalModel>().ReverseMap();
+            CreateMap<MandelbrotSet, MandelbrotSetModel>().ReverseMap();
+            CreateMap<JuliaSet, JuliaSetModel>().ReverseMap();
         }
     }
 }

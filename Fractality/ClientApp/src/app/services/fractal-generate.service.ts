@@ -4,6 +4,7 @@ import { AppConfig } from "../app.config";
 import { BaseService } from "./base.service";
 import { FractalModel, IFractalModel } from "../models/Fractals/fractal.model";
 import { MandelbrotSet } from "../models/Fractals/mandelbrot-set.mode;";
+import { JuliaSet } from "../models/Fractals/julia-set.model";
 
 @Injectable()
 export class FractalGenerateService extends BaseService {
@@ -35,7 +36,7 @@ export class FractalGenerateService extends BaseService {
     }
 
     public generateMandelbrotSet(
-        screenResolutionName: ScreenResolutionName, 
+        screenResolutionName: ScreenResolutionName,
         fractal: FractalModel,
         clickType: ClickType = ClickType.None, 
         mouseX: number = 0, 
@@ -54,8 +55,27 @@ export class FractalGenerateService extends BaseService {
         return this.post(urlRoot + query.join("&"), fractal).then(result => new MandelbrotSet(result.body));
     }
 
-    public generateJuliaSet(): Promise<string> {
-        return this.get(`${this.config.fractalGenerateApi}/julia-set`).then(result => result);
+    public generateJuliaSet(
+        screenResolutionName: ScreenResolutionName,
+        fractal: FractalModel,
+        clickType: ClickType = ClickType.None,
+        limitIteration: number = 100,
+        rel: number = 0.74543,
+        im: number = 0.11301
+    ): Promise<JuliaSet> {
+        let screenResolution = this.screenResolutions.get(screenResolutionName);
+        const urlRoot = `${this.config.fractalGenerateApi}/julia-set?`;
+        const query = [
+            `clickType=${clickType}`,
+            `width=${screenResolution?.width}`,
+            `height=${screenResolution?.height}`,
+            `limitIteration=${limitIteration}`,
+            `rel=${rel}`,
+            `im=${im}`
+        ];
+        console.warn(rel);
+        console.warn(im);
+        return this.post(urlRoot + query.join("&"), fractal).then(result => new JuliaSet(result.body));
     }
 }
 

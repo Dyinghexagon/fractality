@@ -1,7 +1,8 @@
+import { JuliaSet } from "./julia-set.model";
 import { MandelbrotSet } from "./mandelbrot-set.mode;";
 
 export class FractalEmptyFactory {
-    public static CreateEmptyMandelbrotSet(): MandelbrotSet {
+    public static createEmptyMandelbrotSet(): MandelbrotSet {
         return new MandelbrotSet({
             Hx: 0,
             Hy: 0,
@@ -10,6 +11,12 @@ export class FractalEmptyFactory {
             SizeArea: 3,
             ScaleArea: 3,
             Canvas: [],
+        });
+    }
+
+    public static createEmptyJuliaSet(): JuliaSet {
+        return new JuliaSet({
+            Canvas: []
         });
     }
 }
