@@ -2,11 +2,10 @@ import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable, NgZone } from "@angular/core";
 import { Guid } from "guid-typescript";
 import { AppConfig } from "../app.config";
-import { IUserModel } from "../models/user.model";
 import { BaseService } from "./base.service";
 
 @Injectable()
-export class UserService extends BaseService {
+export class AuthService extends BaseService {
 
     constructor(
         http: HttpClient,
@@ -17,8 +16,8 @@ export class UserService extends BaseService {
         super(http, zone, baseUrl);
     }
 
-    public createUser(user: IUserModel): Promise<Guid> {
-        return this.post(`${this.config.userApi}/create`, user);
+    public login(): Promise<Guid> {
+        return this.get(`${this.config.authApi}/login`);
     }
     
 }

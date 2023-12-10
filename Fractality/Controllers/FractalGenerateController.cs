@@ -14,6 +14,7 @@ namespace Fractality.Controllers
     {
         private readonly ILogger<FractalGenerateController> _logger;
         private readonly IMapper _mapper;
+
         public FractalGenerateController(
             ILogger<FractalGenerateController> logger,
             IMapper mapper

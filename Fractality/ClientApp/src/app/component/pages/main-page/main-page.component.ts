@@ -2,6 +2,7 @@ import { AfterViewInit, Component, ElementRef, ViewChild } from "@angular/core";
 import { FractalEmptyFactory } from "src/app/models/Fractals/fractal-empty-factory.model";
 import { MandelbrotSet } from "src/app/models/Fractals/mandelbrot-set.mode;";
 import { ClickType, FractalGenerateService, IScreenResolution, ScreenResolutionName } from "src/app/services/fractal-generate.service";
+import { AuthService } from "src/app/services/auth.service";
 
 @Component({
     selector: "main-page",

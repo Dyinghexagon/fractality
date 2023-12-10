@@ -12,7 +12,7 @@ import { JuliaSetPageComponent } from './component/pages/julia-set-page/julia-se
 import { HeaderComponent } from './component/layouts/header/header.component';
 import { AppConfig } from './app.config';
 import { BaseService } from './services/base.service';
-import { UserService } from './services/user.service';
+import { AuthService } from './services/auth.service';
 import { FractalGenerateService } from './services/fractal-generate.service';
 
 @NgModule({
@@ -33,7 +33,7 @@ import { FractalGenerateService } from './services/fractal-generate.service';
   providers: [
     AppConfig,
     BaseService,
-    UserService,
+    AuthService,
     FractalGenerateService
   ],
   bootstrap: [AppComponent]

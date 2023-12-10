@@ -2,9 +2,13 @@ using Fractality;
 using Fractality.Context;
 using Fractality.Repositories;
 using Fractality.Services.UserServices;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.CookiePolicy;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
+using System.Security.Claims;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,7 +26,27 @@ builder.Services.Configure<KestrelServerOptions>(options =>
     options.Limits.MaxRequestBodySize = int.MaxValue;
 });
 
-builder.Services.AddAuthentication();
+var IsDevelopment = true;
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
+{
+    options.Cookie.Name = "SimpleTalk.AuthCookieAspNetCore";
+    options.LoginPath = "/api/auth/login";
+    options.LogoutPath = "/api/auth/logout";
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SecurePolicy = IsDevelopment ? CookieSecurePolicy.None : CookieSecurePolicy.Always;
+    options.Cookie.SameSite = SameSiteMode.Lax;
+});
+
+builder.Services.Configure<CookiePolicyOptions>(options =>
+{
+    options.MinimumSameSitePolicy = SameSiteMode.Strict;
+    options.HttpOnly = HttpOnlyPolicy.None;
+    options.Secure = IsDevelopment ? CookieSecurePolicy.None : CookieSecurePolicy.Always;
+});
+
+builder.Services.AddAuthorization();
+
 builder.Services.AddAutoMapper(typeof(ApplicationMappingProfile));
 builder.Services.AddDbContext<ApplicationContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreSQL")));
 
@@ -33,7 +57,7 @@ builder.Services.AddTransient<IUsersServices, UserServices>();
 IFileProvider physicalProvider = new PhysicalFileProvider(Directory.GetCurrentDirectory());
 builder.Services.AddSingleton<IFileProvider>(physicalProvider);
 
-builder.Services.AddMvc();
+builder.Services.AddMvc(options => options.Filters.Add(new AuthorizeFilter()));
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddCors();
 
@@ -46,20 +70,35 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseAuthentication();
+app.UseCookiePolicy();
 
 app.UseHttpsRedirection();
 app.UseRouting();
+app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+});
 
 app.UseCors(options =>
 {
     options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
 });
 
-app.UseEndpoints(endpoints =>
+var logger = app.Services.GetService<ILogger<Program>>();
+
+app.Use(async (context, next) =>
 {
-    endpoints.MapControllers();
+    var principal = context.User as ClaimsPrincipal;
+    var accessToken = principal.Claims.FirstOrDefault(c => c.Type == "access_token");
+
+    if (accessToken != null)
+    {
+        logger?.LogDebug(accessToken.Value);
+    }
+    await next();
 });
 
 app.Run();
