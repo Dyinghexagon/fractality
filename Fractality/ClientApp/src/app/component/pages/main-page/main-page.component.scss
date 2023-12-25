@@ -1,75 +1,37 @@
 @import "../../../../assets/shared/variables";
-@import "../../../../assets/shared/page";
 
 .page {
-    background-color: $main-page-background-color;
-    gap: 16px;
-    grid-template-rows: 1fr 1fr 1fr;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
 
-    .main-row {
+    .contant-wrapper {
         display: grid;
         grid-template-columns: 1fr 1fr;
-    }
 
-    .artical-wrapper {
-        padding-left: 16px;
-        padding-right: 16px;
-        display: flex;
-        flex-direction: column; 
+        .row {
+            padding: 10px;
+            margin: 0;
+            border: 1px solid black;
 
-        .image-wrapper {
-            border: 1px solid $color-white;
-            border-bottom: 0;
-            padding: 16px;
-        }
-
-        .article {
-            color: $color-white;
-            text-align: center;
-            border: 1px solid $color-white;
-    
-            .title {
-                font-size: $artical-title-font-size;
+            &.left {
+                border-right: 0;
             }
-    
-            .description {
-                font-size: $artical-description-font-size;
-            }
-        }
 
-        &.julia-set {
-            .image-wrapper {
-                display: grid;
-                grid-template-columns: 0.2fr 1fr;
-                background-color: $color-mauve;
-
-                .left-column {
-                    display: grid;
-                    grid-template-rows: 1fr 1fr;
-
-                    .up-block {
-                        background-color: $color-dark-orchid;
-
-                        span::before {
-                            border-radius: 50%;
-                            color: red;
-                        }
-                    }
-
-                    .down-block {
-                        background-color: $color-army-green;
-                    }
-                }
+            canvas {
+                object-fit: contain;
+                width: 100%;
+                height: 100%;
+                object-position: 50% 50%;
             }
         }
     }
-}
 
-.simple-image {
-    width: 100%;
-    height: 100%;
-    display: inline-block;
-    vertical-align: top;
-    object-fit: cover;
-    object-position: center center;
+    .full-screen-canvas-wrapper {
+        background-color: red;
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        z-index: 1000;
+    }
 }

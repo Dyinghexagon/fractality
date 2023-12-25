@@ -1,6 +1,8 @@
-import { FractalModel, IFractalModel } from "./fractal.model";
+import { FractalModel, FractalType, IFractalModel } from "./fractal.model";
 
 export class JuliaSet extends FractalModel {
+
+    public type: FractalType = FractalType.juliaSet;
     
     constructor(data: IFractalModel) {
         super(data);

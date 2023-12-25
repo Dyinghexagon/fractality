@@ -1,4 +1,4 @@
-import { FractalModel, IFractalModel } from "./fractal.model";
+import { FractalModel, FractalType, IFractalModel } from "./fractal.model";
 
 export class MandelbrotSet extends FractalModel {
     public hx: number;
@@ -7,6 +7,7 @@ export class MandelbrotSet extends FractalModel {
     public y: number;
     public sizeArea: number;
     public scaleArea: number;
+    public type: FractalType = FractalType.mandelbrotSet;
 
     constructor(data: IMandelbrotSet) {
         super(data);

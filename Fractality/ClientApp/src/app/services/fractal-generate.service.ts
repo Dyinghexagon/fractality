@@ -73,8 +73,6 @@ export class FractalGenerateService extends BaseService {
             `rel=${rel}`,
             `im=${im}`
         ];
-        console.warn(rel);
-        console.warn(im);
         return this.post(urlRoot + query.join("&"), fractal).then(result => new JuliaSet(result.body));
     }
 }
